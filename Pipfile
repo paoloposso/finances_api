@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 flask = "*"
 requests = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.11"
