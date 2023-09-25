@@ -21,7 +21,7 @@ def login():
 
         token = auth_service.login(email, password)
 
-        if token and token != '':
+        if token and token != "":
             return jsonify({"token": token}), 200
         else:
             return jsonify({"error": "Login failed"}), 401
