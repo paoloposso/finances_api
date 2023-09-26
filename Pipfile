@@ -7,6 +7,8 @@ name = "pypi"
 flask = "*"
 requests = "*"
 flask-jwt-extended = "*"
+pymongo = "*"
+python-dotenv = "*"
 
 [dev-packages]
 black = "*"
