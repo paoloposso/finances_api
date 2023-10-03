@@ -14,18 +14,16 @@ app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "")
 
 jwt = JWTManager(app)
 
+
 def initialize_database() -> dict:
     os.environ.get("MONGO_URL", "")
 
-    mongo_url = os.environ.get("MONGO_URL", "") # "mongodb://localhost:27017"
+    mongo_url = os.environ.get("MONGO_URL", "")  # "mongodb://localhost:27017"
     database_name = os.environ.get("MONGO_DATABASE_NAME", "")
 
     client = pymongo.MongoClient(mongo_url)
-    
-    return {
-        "client": client,
-        "db_name": database_name
-    }
+
+    return {"client": client, "db_name": database_name}
 
 
 def initialize_routes(client: pymongo.MongoClient, db_name: str):
@@ -36,6 +34,7 @@ def initialize_routes(client: pymongo.MongoClient, db_name: str):
 @app.route("/")
 def index():
     return "API is running!"
+
 
 db_dict = initialize_database()
 initialize_routes(db_dict["client"], db_dict["db_name"])

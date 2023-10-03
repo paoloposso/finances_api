@@ -6,14 +6,12 @@ from auth.tokenization import generate_token
 
 
 class AuthServiceABC(ABC):
-
     @abstractmethod
     def login(self, email, password) -> Optional[str]:
         pass
 
 
 class AuthService(AuthServiceABC):
-
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 

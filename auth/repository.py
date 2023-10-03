@@ -11,16 +11,17 @@ users_mock = [
     {"id": "321", "email": "e@mail.com", "role": "user", "password": "321"},
 ]
 
-class UserRepository:
 
+class UserRepository:
     def __init__(self, db_client: pymongo.MongoClient, db_name: str):
         self.users_collection_name = "users"
         self.db_client = db_client
         self.db_name = db_name
 
         client_collection = self.db_client[db_name].get_collection("clients")
-        client_collection.create_index([("email", pymongo.ASCENDING), ("password", pymongo.ASCENDING)])
-
+        client_collection.create_index(
+            [("email", pymongo.ASCENDING), ("password", pymongo.ASCENDING)]
+        )
 
     def get_user_auth(self, email: str, password: str) -> Optional[AuthenticatedUser]:
         filtered_users = self._get_user_by_email_and_password(email, password)
