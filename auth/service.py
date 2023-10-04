@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from auth.repository import UserRepository
+from auth.exceptions import InvalidDataException, UserAlreadyExistsException
+from auth.repository import UserRepositoryABC
 
 from auth.tokenization import generate_token
 
@@ -10,9 +11,13 @@ class AuthServiceABC(ABC):
     def login(self, email, password) -> Optional[str]:
         pass
 
+    @abstractmethod
+    def create_user(self, email, password):
+        pass
+
 
 class AuthService(AuthServiceABC):
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository: UserRepositoryABC):
         self.user_repository = user_repository
 
     def login(self, email, password) -> Optional[str]:
@@ -23,3 +28,16 @@ class AuthService(AuthServiceABC):
         access_token = generate_token(user_id, user.role)
 
         return access_token
+
+    def create_user(self, email, password, role) -> str:
+        if email is None or len(email) == 0:
+            raise InvalidDataException("User e-mail cannot be empty")
+        if password is None or len(password) == 0:
+            raise InvalidDataException("User password cannot be empty")
+        if role is None or len(role) == 0:
+            raise InvalidDataException("User role cannot be empty")
+
+        if self.user_repository.get_user_by_email(email) is not None:
+            raise UserAlreadyExistsException(f"User e-mail {email} already exists")
+
+        return self.user_repository.create_user(email, password, role)

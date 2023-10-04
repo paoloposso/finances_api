@@ -3,6 +3,7 @@ from jwt import InvalidTokenError
 
 
 def generate_token(user_id: str, role: str) -> str:
+    """Generates kwt token"""
     access_token = create_access_token(
         identity=user_id, additional_claims={"role": role}
     )
