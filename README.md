@@ -1,8 +1,15 @@
 ## Prepare Dev Environment and Dependencies
 
 ### Create virtual env
+
+```
 python -m venv venv
 . ./venv/bin/activate
+```
+
+Alternatively you can use pipenv:
+
+`pipenv shell` (with pipenv installed)
 
 ### Install dependencies
 `pipenv sync --dev`
@@ -13,7 +20,7 @@ Create a `.env` file with the following content:
 ```bash
 JWT_SECRET_KEY=random_value_6378632
 MONGO_URL=mongodb://localhost:27017
-MONGO_DATABASE_NAME=you_db_name
+MONGO_DATABASE_NAME=your_db_name
 ```
 
 ### Run database as container
