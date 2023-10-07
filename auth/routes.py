@@ -1,13 +1,11 @@
 from flask import Blueprint, jsonify, request
 from auth.exceptions import InvalidDataException, UserAlreadyExistsException
-from auth.repository import UserRepository
 
-from auth.service import AuthService
+from auth.service import AuthServiceABC
 
 
-def create_auth_blueprint(db_client, db_name):
+def create_auth_blueprint(auth_service: AuthServiceABC):
     auth_bp = Blueprint("auth", __name__)
-    auth_service = AuthService(user_repository=UserRepository(db_client, db_name))
 
     @auth_bp.route("/", methods=["POST"])
     def login():
