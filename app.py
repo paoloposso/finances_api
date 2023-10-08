@@ -3,9 +3,9 @@ from flask import Flask
 from flask.cli import load_dotenv
 from flask_jwt_extended import JWTManager
 import pymongo
-from auth.repository import UserRepository
-from auth.routes import create_auth_blueprint
-from auth.service import AuthService
+from user.infrastructure.user_mongo import UserRepository
+from user.routes import create_user_blueprint
+from user.service import UserService
 from transactions.routes import transactions_bp
 
 app = Flask(__name__)
@@ -30,7 +30,7 @@ def initialize_database() -> dict:
 
 def initialize_routes(client: pymongo.MongoClient, db_name: str):
     app.register_blueprint(
-        create_auth_blueprint(AuthService(UserRepository(client, db_name))),
+        create_user_blueprint(UserService(UserRepository(client, db_name))),
         url_prefix="/auth",
     )
     app.register_blueprint(transactions_bp, url_prefix="/transactions")

@@ -1,26 +1,10 @@
-from abc import ABC, abstractmethod
 from typing import Optional
-import bcrypt
 
+import bcrypt
 import pymongo
 
-from auth.model import AuthenticatedUser
-from auth.tokenization import generate_token
-
-
-class UserRepositoryABC(ABC):
-    @abstractmethod
-    def get_user_auth(self, email: str, password: str) -> Optional[AuthenticatedUser]:
-        pass
-
-    @abstractmethod
-    def get_user_by_email(self, email: str) -> Optional[AuthenticatedUser]:
-        pass
-
-    @abstractmethod
-    def create_user(self, email: str, password: str, role: str) -> str:
-        pass
-
+from user.model import AuthenticatedUser
+from user.tokenization import generate_token
 
 class UserRepository:
     def __init__(self, db_client: pymongo.MongoClient, db_name: str):
@@ -57,7 +41,6 @@ class UserRepository:
             return result
         return None
 
-    @abstractmethod
     def get_user_by_email(self, email: str) -> Optional[AuthenticatedUser]:
         user_collection = self.db_client[self.db_name][self.users_collection_name]
         user_document = user_collection.find_one({"email": email})

@@ -2,7 +2,7 @@ import unittest
 from flask import Flask, jsonify
 from unittest.mock import MagicMock, patch
 
-from auth.routes import create_auth_blueprint
+from user.routes import create_user_blueprint
 
 
 class AuthBlueprintTestCase(unittest.TestCase):
@@ -10,16 +10,14 @@ class AuthBlueprintTestCase(unittest.TestCase):
         self.app = Flask(__name__)
         self.app.config["TESTING"] = True
 
-        # Create a MagicMock object for AuthServiceABC
         self.auth_service_mock = MagicMock()
 
         self.app.register_blueprint(
-            create_auth_blueprint(self.auth_service_mock), url_prefix="/auth"
+            create_user_blueprint(self.auth_service_mock), url_prefix="/auth"
         )
         self.client = self.app.test_client()
 
     def test_login_success(self):
-        # Configure the mock to return a token when login is called
         self.auth_service_mock.login.return_value = "test_token"
 
         data = {"email": "test@example.com", "password": "password"}

@@ -1,10 +1,10 @@
 from flask import Blueprint, jsonify, request
-from auth.exceptions import InvalidDataException, UserAlreadyExistsException
+from user.exceptions import InvalidDataException, UserAlreadyExistsException
 
-from auth.service import AuthServiceABC
+from user.service import UserServiceABC
 
 
-def create_auth_blueprint(auth_service: AuthServiceABC):
+def create_user_blueprint(auth_service: UserServiceABC):
     auth_bp = Blueprint("auth", __name__)
 
     @auth_bp.route("/", methods=["POST"])

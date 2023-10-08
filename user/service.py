@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from auth.exceptions import InvalidDataException, UserAlreadyExistsException
-from auth.repository import UserRepositoryABC
+from user.exceptions import InvalidDataException, UserAlreadyExistsException
+from user.repository import UserRepositoryABC
 
-from auth.tokenization import generate_token
+from user.tokenization import generate_token
 
 
-class AuthServiceABC(ABC):
+class UserServiceABC(ABC):
     @abstractmethod
     def login(self, email, password) -> Optional[str]:
         pass
@@ -16,7 +16,7 @@ class AuthServiceABC(ABC):
         pass
 
 
-class AuthService(AuthServiceABC):
+class UserService(UserServiceABC):
     def __init__(self, user_repository: UserRepositoryABC):
         self.user_repository = user_repository
 
