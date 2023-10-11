@@ -3,6 +3,7 @@ from typing import Optional
 
 from user.model import AuthenticatedUser
 
+
 class UserRepositoryABC(ABC):
     @abstractmethod
     def get_user_auth(self, email: str, password: str) -> Optional[AuthenticatedUser]:

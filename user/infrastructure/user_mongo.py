@@ -6,6 +6,7 @@ import pymongo
 from user.model import AuthenticatedUser
 from user.tokenization import generate_token
 
+
 class UserRepository:
     def __init__(self, db_client: pymongo.MongoClient, db_name: str):
         self.users_collection_name = "users"
@@ -24,45 +25,11 @@ class UserRepository:
 
         return str(result.inserted_id)
 
-    def get_user_auth(self, email: str, password: str) -> Optional[AuthenticatedUser]:
-        user = self._get_user_by_email_and_password(email, password)
-
-        if user is not None and len(user) > 0:
-            user_id = str(user.get("id", ""))
-            result = AuthenticatedUser(
-                user_id=user_id,
-                email=user.get("email", ""),
-                role=user.get("role", ""),
-                token=generate_token(
-                    user_id,
-                    user.get("role", ""),
-                ),
-            )
-            return result
-        return None
-
     def get_user_by_email(self, email: str) -> Optional[AuthenticatedUser]:
         user_collection = self.db_client[self.db_name][self.users_collection_name]
         user_document = user_collection.find_one({"email": email})
 
         if user_document:
-            return {
-                "id": user_document.get("_id", ""),
-                "email": user_document.get("email", ""),
-                "role": user_document.get("role", ""),
-            }
-
-        return None
-
-    def _get_user_by_email_and_password(
-        self, email: str, password: str
-    ) -> Optional[dict]:
-        user_collection = self.db_client[self.db_name][self.users_collection_name]
-        user_document = user_collection.find_one({"email": email})
-
-        if user_document and bcrypt.checkpw(
-            password.encode("utf-8"), user_document["password"]
-        ):
             return {
                 "id": user_document.get("_id", ""),
                 "email": user_document.get("email", ""),

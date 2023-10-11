@@ -29,9 +29,10 @@ make db-start
 Check the `makefile` in this repo for more commands that you can use to create and run the environment.
 
 ## Execute tests
-On terminal, run `pytest -v`
+On terminal, run `pipenv run pytest`, to run all tests.
+Or specify a folder by running `pipenv run pytest tests/user/*`, to run all tests within the folder `tests/user`, for example.
 
-The tests are currently within the folder `tests``, at the root of the project.
+The tests are currently within the folder `tests`, at the root of the project.
 
 ## Debugging tests
 

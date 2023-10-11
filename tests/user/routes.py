@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from user.routes import create_user_blueprint
 
 
-class AuthBlueprintTestCase(unittest.TestCase):
+class UserBlueprintTestCase(unittest.TestCase):
     def setUp(self):
         self.app = Flask(__name__)
         self.app.config["TESTING"] = True

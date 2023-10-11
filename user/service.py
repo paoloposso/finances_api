@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
+
+import bcrypt
 from user.exceptions import InvalidDataException, UserAlreadyExistsException
 from user.repository import UserRepositoryABC
 
@@ -21,15 +23,16 @@ class UserService(UserServiceABC):
         self.user_repository = user_repository
 
     def login(self, email, password) -> Optional[str]:
-        user = self.user_repository.get_user_auth(email, password)
+        user = self.user_repository.get_user_by_email(email)
         if user is None:
             return None
-        user_id = user.user_id
-        access_token = generate_token(user_id, user.role)
 
-        return access_token
+        if bcrypt.checkpw(password.encode("utf-8"), user.password):
+            return generate_token(user.user_id, user.role)
 
-    def create_user(self, email, password, role) -> str:
+        return None
+
+    def create_user(self, email: str, password: str, role: str) -> str:
         if email is None or len(email) == 0:
             raise InvalidDataException("User e-mail cannot be empty")
         if password is None or len(password) == 0:
@@ -41,3 +44,20 @@ class UserService(UserServiceABC):
             raise UserAlreadyExistsException(f"User e-mail {email} already exists")
 
         return self.user_repository.create_user(email, password, role)
+
+    def _get_user_by_email_and_password(
+        self, email: str, password: str
+    ) -> Optional[dict]:
+        user_collection = self.db_client[self.db_name][self.users_collection_name]
+        user_document = user_collection.find_one({"email": email})
+
+        if user_document and bcrypt.checkpw(
+            password.encode("utf-8"), user_document["password"]
+        ):
+            return {
+                "id": user_document.get("_id", ""),
+                "email": user_document.get("email", ""),
+                "role": user_document.get("role", ""),
+            }
+
+        return None
