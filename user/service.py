@@ -40,7 +40,8 @@ class UserService(UserServiceABC):
         if role is None or len(role) == 0:
             raise InvalidDataException("User role cannot be empty")
 
-        if self.user_repository.get_user_by_email(email) is not None:
+        user = self.user_repository.get_user_by_email(email) 
+        if user is not None:
             raise UserAlreadyExistsException(f"User e-mail {email} already exists")
 
         return self.user_repository.create_user(email, password, role)

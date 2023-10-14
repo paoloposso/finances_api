@@ -17,6 +17,7 @@ class ServiceTestCase(unittest.TestCase):
 
     def test_create_user(self):
         self.repository_mock.create_user.return_value = "test_id"
+        self.repository_mock.get_user_by_email.return_value = None
 
         inserted_id = self.service.create_user("email@test.com", "1234", "admin")
 
