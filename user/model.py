@@ -4,3 +4,10 @@ class AuthenticatedUser:
         self.email = email
         self.role = role
         self.token = token
+
+
+class User:
+    def __init__(self, email: str, role: str, name: str):
+        self.email = email
+        self.role = role
+        self.name = name

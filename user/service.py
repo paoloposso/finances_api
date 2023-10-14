@@ -3,6 +3,7 @@ from typing import Optional
 
 import bcrypt
 from user.exceptions import InvalidDataException, UserAlreadyExistsException
+from user.model import User
 from user.repository import UserRepositoryABC
 
 from user.tokenization import generate_token
@@ -14,7 +15,7 @@ class UserServiceABC(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, email, password):
+    def create_user(self, user: User, plain_password: str) -> str:
         pass
 
 
@@ -22,29 +23,31 @@ class UserService(UserServiceABC):
     def __init__(self, user_repository: UserRepositoryABC):
         self.user_repository = user_repository
 
-    def login(self, email, password) -> Optional[str]:
+    def login(self, email, hashed_password) -> Optional[str]:
         user = self.user_repository.get_user_by_email(email)
         if user is None:
             return None
 
-        if bcrypt.checkpw(password.encode("utf-8"), user.password):
+        if bcrypt.checkpw(hashed_password.encode("utf-8"), user.password):
             return generate_token(user.user_id, user.role)
 
         return None
 
-    def create_user(self, email: str, password: str, role: str) -> str:
-        if email is None or len(email) == 0:
+    def create_user(self, user: User, plain_password: str) -> str:
+        if user.email is None or len(user.email) == 0:
             raise InvalidDataException("User e-mail cannot be empty")
-        if password is None or len(password) == 0:
+        if plain_password is None or len(plain_password) == 0:
             raise InvalidDataException("User password cannot be empty")
-        if role is None or len(role) == 0:
+        if user.role is None or len(user.role) == 0:
             raise InvalidDataException("User role cannot be empty")
+        if user.name is None or len(user.name) == 0:
+            raise InvalidDataException("User name cannot be empty")
 
-        user = self.user_repository.get_user_by_email(email) 
-        if user is not None:
-            raise UserAlreadyExistsException(f"User e-mail {email} already exists")
+        existing_user = self.user_repository.get_user_by_email(user.email)
+        if existing_user is not None:
+            raise UserAlreadyExistsException(f"User e-mail {user.email} already exists")
 
-        return self.user_repository.create_user(email, password, role)
+        return self.user_repository.create_user(user, plain_password)
 
     def _get_user_by_email_and_password(
         self, email: str, password: str

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from user.model import AuthenticatedUser
+from user.model import AuthenticatedUser, User
 
 
 class UserRepositoryABC(ABC):
@@ -14,5 +14,5 @@ class UserRepositoryABC(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, email: str, password: str, role: str) -> str:
+    def create_user(self, user: User, plain_password: str) -> str:
         pass

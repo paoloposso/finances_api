@@ -3,3 +3,6 @@ db-start:
 
 db-stop:
 	docker-compose down
+
+test:
+	pipenv run pytest

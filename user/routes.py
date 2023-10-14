@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from user.exceptions import InvalidDataException, UserAlreadyExistsException
+from user.model import User
 
 from user.service import UserServiceABC
 
@@ -32,15 +33,27 @@ def create_user_blueprint(auth_service: UserServiceABC):
         try:
             data = request.get_json()
 
-            if "email" not in data or "password" not in data:
-                return jsonify({"error": "Missing email or password"}), 400
+            if (
+                "email" not in data
+                or "password" not in data
+                or "role" not in data
+                or "name" not in data
+            ):
+                return jsonify({"error": "Missing required fields"}), 400
 
             email = data.get("email", "")
-            password = data.get("password", "")
+            plain_password = data.get("password", "")
             role = data.get("role", "")
+            name = data.get("name", "")
 
             return (
-                jsonify({"user_id": auth_service.create_user(email, password, role)}),
+                jsonify(
+                    {
+                        "user_id": auth_service.create_user(
+                            User(email, role, name), plain_password
+                        )
+                    }
+                ),
                 200,
             )
         except UserAlreadyExistsException as e:
